@@ -53,10 +53,10 @@ Figma 디자인을 코드로 구현할 때 반드시 다음 순서를 따를 것
 
 - [ ] 사용자 입력을 SQL 문자열에 직접 삽입
 - [ ] 출력 시 이스케이프 없이 사용자 데이터 렌더링
-- [ ] CSRF 토큰 없는 상태 변경 요청
+- [ ] CSRF 토큰 없는 상태 변경 요청 (세션 기반 인증 사용 시)
 - [ ] 인증 체크 없는 처리 엔드포인트
 - [ ] 평문 비밀번호 저장
-- [ ] `.env` / 시크릿 파일 커밋
+- [ ] `.env` / 시크릿 파일 커밋 (Git 히스토리 포함)
 - [ ] 운영 환경 상세 에러 노출
 - [ ] 사용자 입력을 셸 명령에 직접 전달
 - [ ] 파일 경로에 사용자 입력 직접 사용 (`../` 등)
@@ -71,7 +71,7 @@ Figma 디자인을 코드로 구현할 때 반드시 다음 순서를 따를 것
 - CSRF: 폼에 CSRF 토큰 삽입 및 서버 검증, 중요 동작은 POST만
 - 세션: 로그인 후 `session_regenerate_id(true)`, 쿠키에 httponly/secure/samesite 설정
 - 비밀번호: `password_hash()` / `password_verify()` 사용
-- 파일업로드: 확장자 화이트리스트, MIME 검증(`finfo_file()`), 파일명 랜덤 생성, 업로드 디렉토리 PHP 실행 차단
+- 파일업로드: 업로드 디렉토리 PHP 실행 차단, MIME 검증은 `finfo_file()` 사용
 - 에러: 운영 환경 `display_errors=Off`, DB 에러 사용자 노출 금지
 - 입력검증: `filter_var()`, `intval()` 등으로 타입 검증
 - `eval()`, `exec()`, `system()` 사용 최소화
@@ -81,10 +81,7 @@ Figma 디자인을 코드로 구현할 때 반드시 다음 순서를 따를 것
 - SQL: ORM 또는 Parameterized Query 사용 (Sequelize, Prisma 등)
 - 인증: JWT secret 하드코딩 금지, 토큰 만료 설정 필수
 - 의존성: `npm audit` 정기 실행, 알려진 취약 패키지 업데이트
-- CORS: `Access-Control-Allow-Origin: *` 운영 환경 사용 금지, 허용 도메인 명시
-- 입력검증: 서버 사이드 검증 필수 (클라이언트 검증만으로 불충분)
-- 환경변수: `.env` 파일 git 커밋 금지, `dotenv` 사용
-- Rate Limiting: API 엔드포인트에 요청 제한 적용
+- 환경변수: `dotenv` 사용
 - `eval()`, `Function()` 생성자 사용 금지
 
 ### Python
@@ -100,22 +97,52 @@ Figma 디자인을 코드로 구현할 때 반드시 다음 순서를 따를 것
 
 ### Java / Spring
 - SQL: JPA/Hibernate 또는 PreparedStatement 사용, 문자열 연결 쿼리 금지
-- XSS: Thymeleaf `th:text` 사용 (`th:utext` 지양), 입력값 이스케이프
-- CSRF: Spring Security CSRF 보호 활성화
+- SQL(동적 정렬): 정렬 컬럼은 Enum 또는 화이트리스트로 검증, 사용자 입력 직접 사용 금지
+- XSS: Thymeleaf `th:text` 사용 (`th:utext` 지양), JSP는 `<c:out>` 또는 `fn:escapeXml()` 사용
+- CSRF: Spring Security CSRF 보호 활성화 (JWT Stateless 방식은 비활성화 허용)
 - 인증: Spring Security 사용, 비밀번호 `BCryptPasswordEncoder`
+- Entity 노출 금지: API 응답에 Entity 직접 반환 금지, Request/Response DTO 분리
+- @Transactional: 클래스 기본 `readOnly = true`, 쓰기 메서드만 `@Transactional` 오버라이드
+- N+1 방지: `default_batch_fetch_size` 설정 또는 fetch join / `@EntityGraph` 사용
 - 역직렬화: 신뢰할 수 없는 데이터 `ObjectInputStream` 사용 금지
 - 로깅: 민감 정보(비밀번호, 토큰) 로그 출력 금지
 - 의존성: OWASP Dependency Check 적용
-- 설정: `application.yml`에 시크릿 하드코딩 금지, Vault 또는 환경변수 사용
+- 설정: `application.yml` 민감값 평문 금지, JASYPT 암호화 또는 환경변수 사용
+- 운영 프로파일: `show-sql: false`, `ddl-auto: validate`, 디버그 모드 비활성화 필수
+- 인증 주입: `@AuthenticationPrincipal` 사용, 요청 파라미터 `userId` 직접 신뢰 금지
+- Mass Assignment: `@RequestBody` DTO가 Entity와 동일 구조 금지, `@JsonIgnoreProperties(ignoreUnknown = true)` 필수
+- 입력검증: Controller에서 `@Valid` / `@Validated` 사용 필수
+- MyBatis: `${}` 사용 금지, `#{}` 파라미터 바인딩 사용
+- XML 파싱: XXE 방어 설정 필수 (외부 엔티티 비활성화)
+- 예외 처리: `@ControllerAdvice` GlobalExceptionHandler 필수, stack trace 미노출
+- 운영 설정: `server.error.include-stacktrace: never` 필수
+- 토큰/세션 ID URL 파라미터 전달 금지 (서버 접근 로그에 노출됨)
+- 타이밍 공격 방지: 비밀번호/토큰 비교 시 `MessageDigest.isEqual` 사용
+- 랜덤값 생성: `SecureRandom` 사용 (`Math.random()` 금지)
+- 운영 환경: Actuator(`/env`, `/beans` 등) / H2 Console 노출 금지
+- JWT 사용 시: null / 만료 / 서명 예외 처리 누락 여부 확인, 토큰 만료 시간 설정 필수
+- Enum 검증: 상태값은 문자열 그대로 신뢰 금지, Enum 타입으로 변환 검증
 
 ### 공통 (모든 언어)
 - HTTPS 필수 (운영 환경)
-- 보안 헤더 설정: `X-Content-Type-Options: nosniff`, `X-Frame-Options`, `X-XSS-Protection`
+- 보안 헤더 설정: `X-Content-Type-Options: nosniff`, `X-Frame-Options`, `X-XSS-Protection`, `Strict-Transport-Security`, `Content-Security-Policy`
+- CORS: `Access-Control-Allow-Origin: *` 운영 환경 사용 금지, 허용 도메인 명시
+- 입력검증: 서버 사이드 검증 필수 (클라이언트 검증만으로 불충분)
+- Swagger / API 문서 운영 환경 노출 금지
+- Rate Limiting: API 엔드포인트에 요청 제한 적용
 - 중요 설정 파일은 웹 루트 밖 배치
 - 디렉토리 리스팅 비활성화
 - 에러 메시지에 시스템 내부 정보 노출 금지
-- 로그인 실패 횟수 제한 (brute force 방지)
+- 로그인 기능 있는 경우: 로그인 실패 횟수 제한 (brute force 방지)
 - 민감 데이터(비밀번호, API 키)는 암호화 저장, 평문 금지
+- 쿠키 사용 시: `HttpOnly` / `Secure` / `SameSite` 설정 필수
+- 상태 변경 API에 GET 메서드 사용 금지
+- 테스트 계정 / 테스트 코드 운영 환경 포함 금지
+- Race Condition: 동시 요청으로 인한 데이터 정합성 주의 (트랜잭션 + DB 락 활용)
+- 약한 암호화 알고리즘 금지: 비밀번호/해시에 MD5, SHA-1 사용 금지
+- ReDoS: 복잡한 정규식에 사용자 입력 적용 시 DoS 가능성 주의
+- Log Injection: 로그 출력 시 개행문자(`\n`, `\r`) 제거/이스케이프
+- 파일 기능 있는 경우: 확장자 화이트리스트 + MIME 타입 이중 검증, 파일명 UUID 랜덤화, 업로드 경로 설정 파일 관리, 다운로드 시 Path Traversal(`../`) 방지
 
 ## 수정 작업 리포트 규칙
 코드 수정 작업을 완료한 후, 각 수정 항목에 대해 **완성도 점수**를 매겨서 보고할 것:

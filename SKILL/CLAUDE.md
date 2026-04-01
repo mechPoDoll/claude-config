@@ -245,8 +245,8 @@ figma.ui.postMessage(JSON.stringify(result, null, 2));
 |------|------|
 | 페이지명 | {{페이지명}} |
 | Figma 프레임 | {{frameId}} |
-| 관련 파일 | {{pages/파일.php, api/파일.php}} |
-| 접근 권한 | {{mt_level 조건}} |
+| 관련 파일 | {{파일 경로 (예: controller/, service/, pages/, api/ 등)}} |
+| 접근 권한 | {{권한 조건 (예: role, permission, mt_level, 로그인 여부 등)}} |
 
 #### 변경 내용                                 ← **MUST**
 {{변경 사항 번호 리스트}}
