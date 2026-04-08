@@ -1,4 +1,9 @@
-# Global Rules
+# Global Rules — 공통 규칙
+
+> 이 파일을 `~/.claude/CLAUDE.md`에 복사하여 모든 프로젝트에 적용하세요.
+> 언어별 보안 규칙은 `GLOBAL/security-{언어}.md` 파일을 프로젝트 특성에 맞게 병합하세요.
+
+---
 
 ## Figma 작업 워크플로우
 Figma 디자인을 코드로 구현할 때 반드시 다음 순서를 따를 것:
@@ -39,16 +44,6 @@ Figma 디자인을 코드로 구현할 때 반드시 다음 순서를 따를 것
 | ❌ | 실패 | 실패 항목 존재, 수정 대기 |
 | ⬜ | 대기 | 미착수 |
 
-## 디렉터리 CLAUDE.md 강제 참조 규칙
-프로젝트 내 하위 디렉터리에 CLAUDE.md가 존재하면, 해당 디렉터리에 파일을 생성·수정할 때 반드시 아래 절차를 따를 것:
-
-1. **작업 전**: 해당 디렉터리의 CLAUDE.md를 읽고, 파일 명명 규칙·템플릿 형식을 확인
-2. **파일 생성 시**: CLAUDE.md에 정의된 명명 패턴과 템플릿 구조를 준수
-3. **작업 후**: 인덱스 파일(index.md 등)이 존재하면 반드시 갱신
-4. **컨텍스트 압축 후 이어받은 세션에서도**: 파일 생성·수정 전에 디렉터리 CLAUDE.md를 다시 읽을 것
-
-> 이 규칙은 skill/, QA/ 등 산출물 디렉터리뿐 아니라, CLAUDE.md가 있는 모든 하위 디렉터리에 적용된다.
-
 ## 금지 사항 체크리스트 (모든 프로젝트 공통)
 
 - [ ] 사용자 입력을 SQL 문자열에 직접 삽입
@@ -62,68 +57,8 @@ Figma 디자인을 코드로 구현할 때 반드시 다음 순서를 따를 것
 - [ ] 파일 경로에 사용자 입력 직접 사용 (`../` 등)
 - [ ] 불필요한 개인정보 수집/로깅
 
-## 보안 체크리스트 (코드 작성 시 반드시 준수)
-코드를 작성하거나 수정할 때 해당 언어의 보안 체크리스트를 반드시 따를 것.
+## 공통 보안 규칙 (모든 언어)
 
-### PHP
-- SQL: PDO Prepared Statement 필수, 사용자 입력을 쿼리에 직접 연결 금지
-- XSS: 출력 시 `htmlspecialchars($var, ENT_QUOTES, 'UTF-8')`, JS 내 변수는 `json_encode()`
-- CSRF: 폼에 CSRF 토큰 삽입 및 서버 검증, 중요 동작은 POST만
-- 세션: 로그인 후 `session_regenerate_id(true)`, 쿠키에 httponly/secure/samesite 설정
-- 비밀번호: `password_hash()` / `password_verify()` 사용
-- 파일업로드: 업로드 디렉토리 PHP 실행 차단, MIME 검증은 `finfo_file()` 사용
-- 에러: 운영 환경 `display_errors=Off`, DB 에러 사용자 노출 금지
-- 입력검증: `filter_var()`, `intval()` 등으로 타입 검증
-- `eval()`, `exec()`, `system()` 사용 최소화
-
-### JavaScript / Node.js
-- XSS: 사용자 입력을 innerHTML/document.write에 직접 삽입 금지, DOM 조작 시 `textContent` 사용
-- SQL: ORM 또는 Parameterized Query 사용 (Sequelize, Prisma 등)
-- 인증: JWT secret 하드코딩 금지, 토큰 만료 설정 필수
-- 의존성: `npm audit` 정기 실행, 알려진 취약 패키지 업데이트
-- 환경변수: `dotenv` 사용
-- `eval()`, `Function()` 생성자 사용 금지
-
-### Python
-- SQL: ORM 사용 또는 파라미터 바인딩 (`cursor.execute(sql, params)`)
-- XSS: 템플릿 엔진 자동 이스케이프 활성화 (Jinja2 `autoescape=True`)
-- 입력검증: `ast.literal_eval()` 사용 (`eval()` 금지)
-- 의존성: `pip audit` / `safety check` 정기 실행
-- 비밀번호: `bcrypt` 또는 `argon2` 사용
-- 파일경로: `os.path.realpath()`로 경로 검증, Path Traversal 방지
-- `pickle.loads()` 신뢰할 수 없는 데이터에 사용 금지
-- CORS/시크릿: 설정 파일에 하드코딩 금지, 환경변수 사용
-- Django: `DEBUG=False` 운영 환경 필수, `ALLOWED_HOSTS` 설정
-
-### Java / Spring
-- SQL: JPA/Hibernate 또는 PreparedStatement 사용, 문자열 연결 쿼리 금지
-- SQL(동적 정렬): 정렬 컬럼은 Enum 또는 화이트리스트로 검증, 사용자 입력 직접 사용 금지
-- XSS: Thymeleaf `th:text` 사용 (`th:utext` 지양), JSP는 `<c:out>` 또는 `fn:escapeXml()` 사용
-- CSRF: Spring Security CSRF 보호 활성화 (JWT Stateless 방식은 비활성화 허용)
-- 인증: Spring Security 사용, 비밀번호 `BCryptPasswordEncoder`
-- Entity 노출 금지: API 응답에 Entity 직접 반환 금지, Request/Response DTO 분리
-- @Transactional: 클래스 기본 `readOnly = true`, 쓰기 메서드만 `@Transactional` 오버라이드
-- N+1 방지: `default_batch_fetch_size` 설정 또는 fetch join / `@EntityGraph` 사용
-- 역직렬화: 신뢰할 수 없는 데이터 `ObjectInputStream` 사용 금지
-- 로깅: 민감 정보(비밀번호, 토큰) 로그 출력 금지
-- 의존성: OWASP Dependency Check 적용
-- 설정: `application.yml` 민감값 평문 금지, JASYPT 암호화 또는 환경변수 사용
-- 운영 프로파일: `show-sql: false`, `ddl-auto: validate`, 디버그 모드 비활성화 필수
-- 인증 주입: `@AuthenticationPrincipal` 사용, 요청 파라미터 `userId` 직접 신뢰 금지
-- Mass Assignment: `@RequestBody` DTO가 Entity와 동일 구조 금지, `@JsonIgnoreProperties(ignoreUnknown = true)` 필수
-- 입력검증: Controller에서 `@Valid` / `@Validated` 사용 필수
-- MyBatis: `${}` 사용 금지, `#{}` 파라미터 바인딩 사용
-- XML 파싱: XXE 방어 설정 필수 (외부 엔티티 비활성화)
-- 예외 처리: `@ControllerAdvice` GlobalExceptionHandler 필수, stack trace 미노출
-- 운영 설정: `server.error.include-stacktrace: never` 필수
-- 토큰/세션 ID URL 파라미터 전달 금지 (서버 접근 로그에 노출됨)
-- 타이밍 공격 방지: 비밀번호/토큰 비교 시 `MessageDigest.isEqual` 사용
-- 랜덤값 생성: `SecureRandom` 사용 (`Math.random()` 금지)
-- 운영 환경: Actuator(`/env`, `/beans` 등) / H2 Console 노출 금지
-- JWT 사용 시: null / 만료 / 서명 예외 처리 누락 여부 확인, 토큰 만료 시간 설정 필수
-- Enum 검증: 상태값은 문자열 그대로 신뢰 금지, Enum 타입으로 변환 검증
-
-### 공통 (모든 언어)
 - HTTPS 필수 (운영 환경)
 - 보안 헤더 설정: `X-Content-Type-Options: nosniff`, `X-Frame-Options`, `X-XSS-Protection`, `Strict-Transport-Security`, `Content-Security-Policy`
 - CORS: `Access-Control-Allow-Origin: *` 운영 환경 사용 금지, 허용 도메인 명시
