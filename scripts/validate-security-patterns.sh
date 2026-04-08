@@ -66,9 +66,13 @@ fi
 # 공통: .env 파일이 Git 추적 대상인지 확인
 # ──────────────────────────────────────────
 echo "[ 공통 ] .env 파일 Git 추적 여부 확인..."
-if git -C "$TARGET_DIR" ls-files --error-unmatch .env > /dev/null 2>&1; then
-  echo "  ❌ .env 파일이 Git에 추적되고 있습니다! 즉시 제거하고 .gitignore에 추가하세요."
-  ERRORS=$((ERRORS + 1))
+if git -C "$TARGET_DIR" rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+  if git -C "$TARGET_DIR" ls-files --error-unmatch .env > /dev/null 2>&1; then
+    echo "  ❌ .env 파일이 Git에 추적되고 있습니다! 즉시 제거하고 .gitignore에 추가하세요."
+    ERRORS=$((ERRORS + 1))
+  fi
+else
+  echo "  ⚠️  Git 저장소가 아닙니다. .env 파일 추적 검사를 건너뜁니다."
 fi
 
 # ──────────────────────────────────────────
