@@ -17,7 +17,7 @@ SKILL_DIR="${1:-SKILL}"
 ERRORS=0
 
 if [ ! -d "$SKILL_DIR" ]; then
-  echo "SKILL 디렉터리를 찾을 수 없습니다: $SKILL_DIR"
+  echo "SKILL 디렉터리가 없습니다. 검증을 건너뜁니다: $SKILL_DIR"
   exit 0
 fi
 

@@ -18,7 +18,7 @@ QA_DIR="${1:-QA}"
 ERRORS=0
 
 if [ ! -d "$QA_DIR" ]; then
-  echo "QA 디렉터리를 찾을 수 없습니다: $QA_DIR"
+  echo "QA 디렉터리가 없습니다. 검증을 건너뜁니다: $QA_DIR"
   exit 0
 fi
 
