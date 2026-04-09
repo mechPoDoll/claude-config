@@ -56,10 +56,8 @@
 ```
 /
 ├── CLAUDE.md              # 프로젝트 루트 규칙 (이 파일)
-├── QA/
-│   └── CLAUDE.md          # QA 디렉터리 참고 문서
-├── SKILL/
-│   └── CLAUDE.md          # Skill 디렉터리 참고 문서
+├── QA/                    # QA 산출물 디렉터리
+├── SKILL/                 # SKILL 명세서 디렉터리
 └── .env                   # 환경변수 (git 제외)
 ```
 
@@ -184,14 +182,11 @@
 - QA 파일명: `qa_YYYYMMDD_v#.md` (예: `qa_20260318_v1.md`)
 - 주제별: `qa_YYYYMMDD_v#_주제.md`
 - 작업 시작 시 `QA/index.md` 생성, 보고서 추가 시 갱신 필수
-- 상세 형식: `QA/CLAUDE.md` 참조
-
 ## 7. SKILL 핵심 규칙
 
 - 명세서 파일명: `NN_섹션명.md` (예: `01_DASHBOARD.md`)
 - 변경 요청: `CHANGE_MMDD.md` (예: `CHANGE_0317.md`)
 - 첫 작업 시 `00_OVERVIEW.md` 먼저 생성, `index.md` 갱신 필수
-- 상세 형식: `SKILL/CLAUDE.md` 참조
 
 ---
 
