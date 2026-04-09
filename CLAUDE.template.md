@@ -35,7 +35,7 @@
 ├── CLAUDE.md              # 프로젝트 루트 규칙 (이 파일)
 ├── QA/                    # QA 산출물 (보안감사 보고서 등)
 ├── SKILL/                 # SKILL 명세서 (기능/화면 분석)
-└── .env                   # 환경변수 (git 제외)
+└── .env                   # 환경변수 (버전관리·배포 제외)
 ```
 
 ---
@@ -59,6 +59,15 @@
 
 ### 빌드
 {{빌드 과정을 작성하세요. 빌드 과정이 없으면 "빌드 과정 없음. 파일 수정 즉시 반영." 등으로 기재}}
+
+### 배포
+| 항목 | 내용 |
+|------|------|
+| 배포 방식 | {{예: Git push / FTP / SFTP / rsync / CI/CD 등}} |
+| 배포 대상 | {{예: 운영 서버 IP, 도메인, 경로}} |
+| 배포 제외 | {{예: .env, node_modules, .git, log/ 등}} |
+
+{{FTP/SFTP 사용 시: `.vscode/sftp.json` 설정은 글로벌 규칙(~/.claude/CLAUDE.md)의 SFTP 설정 규칙을 따를 것}}
 
 ---
 
@@ -154,6 +163,23 @@
 
 ---
 
+## 6. QA 핵심 규칙
+
+- QA 파일은 `QA/` 디렉터리에 생성. 작업 시작 시 `QA/index.md` 먼저 생성
+- 파일명: `qa_YYYYMMDD_v#.md` / 주제별: `qa_YYYYMMDD_v#_주제.md`
+- 보고서 추가·조치 완료 시 `QA/index.md` 갱신 필수
+- 상세 절차는 `/qa-audit` 커맨드 참조
+
+## 7. SKILL 핵심 규칙
+
+- SKILL 파일은 `SKILL/` 디렉터리에 생성. 첫 작업 시 `SKILL/00_OVERVIEW.md` 먼저 생성
+- 명세서: `NN_섹션명.md` / 변경요청: `CHANGE_MMDD.md`
+- 문서 추가·수정 시 `SKILL/index.md` 갱신 필수
+- 상세 절차는 `/skill-write` 커맨드 참조
+
+---
+
 ## 기여 가이드
-- PR 제목은 `feat`, `fix`, `docs` 등으로 시작
+- Git 사용 시: PR 제목은 `feat`, `fix`, `docs` 등으로 시작
+- FTP 사용 시: 수정 파일 목록과 변경 사유를 QA 보고서 또는 커밋 로그에 기록
 - 코드 스타일: 네이밍 컨벤션 및 Lint 준수
