@@ -39,8 +39,12 @@ claude-config/
 ├── .github/
 │   └── workflows/
 │       └── harness-check.yml
+├── .gitignore
 └── README.md
 ```
+
+> 이 레포에는 QA/, SKILL/ 디렉터리가 없습니다.
+> 이들은 **대상 프로젝트**에서 사용자가 생성하는 디렉터리입니다.
 
 ---
 

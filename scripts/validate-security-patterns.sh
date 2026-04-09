@@ -50,6 +50,18 @@ if [ -n "$JS_EVAL" ]; then
 fi
 
 # ──────────────────────────────────────────
+# JavaScript: innerHTML 직접 사용 (XSS 위험)
+# ──────────────────────────────────────────
+echo "[ JS ] innerHTML 직접 사용 탐지..."
+JS_INNERHTML=$(find "$TARGET_DIR" \( -name "*.js" -o -name "*.ts" -o -name "*.jsx" -o -name "*.tsx" \) \
+  -not -path "*/node_modules/*" -not -path "*/.git/*" \
+  -exec grep -ln '\.innerHTML\s*=' {} \; 2>/dev/null || true)
+if [ -n "$JS_INNERHTML" ]; then
+  echo "  ⚠️  innerHTML 직접 사용 감지 (XSS 위험, 수동 확인 필요):"
+  echo "$JS_INNERHTML" | sed 's/^/     /'
+fi
+
+# ──────────────────────────────────────────
 # Python: eval() 사용
 # ──────────────────────────────────────────
 echo "[ Python ] eval() 사용 탐지..."

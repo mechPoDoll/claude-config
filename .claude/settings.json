@@ -21,7 +21,8 @@
       "Bash(wget:*)",
       "Bash(eval:*)",
       "Bash(exec:*)",
-      "Bash(sudo:*)"
+      "Bash(sudo:*)",
+      "Bash(rm:*)"
     ]
   }
 }
