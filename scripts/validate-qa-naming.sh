@@ -1,6 +1,7 @@
 #!/bin/bash
 # QA 디렉터리 파일 명명 규칙 검증
 # 허용 패턴:
+#   .gitkeep
 #   index.md
 #   legacy_checklist.md
 #   qa_YYYYMMDD_v#.md
@@ -10,7 +11,6 @@
 #   범위-report.html
 #   deploy.*
 #   deploy_모듈명.*
-#   CLAUDE.md (디렉터리 규칙 파일)
 
 set -e
 
@@ -31,7 +31,7 @@ for filepath in "$QA_DIR"/*; do
 
   # 허용 패턴 검사
   if echo "$filename" | grep -qE \
-    '^(CLAUDE|index|legacy_checklist)\.md$|^qa_[0-9]{8}_v[0-9]+(_[a-zA-Z0-9_]+)?\.md$|^e2e-[a-zA-Z0-9_-]+\.[a-zA-Z]+$|^visual-test\.[a-zA-Z]+$|^[a-zA-Z0-9_-]+-report\.html$|^deploy(_[a-zA-Z0-9_]+)?\.[a-zA-Z]+$'; then
+    '^\.gitkeep$|^(index|legacy_checklist)\.md$|^qa_[0-9]{8}_v[0-9]+(_[a-zA-Z0-9_]+)?\.md$|^e2e-[a-zA-Z0-9_-]+\.[a-zA-Z]+$|^visual-test\.[a-zA-Z]+$|^[a-zA-Z0-9_-]+-report\.html$|^deploy(_[a-zA-Z0-9_]+)?\.[a-zA-Z]+$'; then
     echo "  ✅ $filename"
   else
     echo "  ❌ 명명 규칙 위반: $filename"

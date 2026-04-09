@@ -1,7 +1,7 @@
 #!/bin/bash
 # SKILL 디렉터리 파일 명명 규칙 검증
 # 허용 패턴:
-#   CLAUDE.md (디렉터리 규칙 파일)
+#   .gitkeep
 #   00_OVERVIEW.md
 #   NN_섹션명.md  (두 자리 숫자 + 영문대문자/언더스코어)
 #   CHANGE_MMDD.md  (4자리 날짜)
@@ -30,7 +30,7 @@ for filepath in "$SKILL_DIR"/*; do
 
   # 허용 패턴 검사
   if echo "$filename" | grep -qE \
-    '^(CLAUDE|index|user_index|DB_SCHEMA|00_OVERVIEW)\.md$|^[0-9]{2}_[A-Z][A-Z0-9_]+\.md$|^CHANGE_[0-9]{4}\.md$|^USER_[0-9]{2}_[A-Z][A-Z0-9_]+\.md$|^migration_[a-zA-Z0-9_]+\.sql$'; then
+    '^\.gitkeep$|^(index|user_index|DB_SCHEMA|00_OVERVIEW)\.md$|^[0-9]{2}_[A-Z][A-Z0-9_]+\.md$|^CHANGE_[0-9]{4}\.md$|^USER_[0-9]{2}_[A-Z][A-Z0-9_]+\.md$|^migration_[a-zA-Z0-9_]+\.sql$'; then
     echo "  ✅ $filename"
   else
     echo "  ❌ 명명 규칙 위반: $filename"
