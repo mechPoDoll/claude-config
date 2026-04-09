@@ -25,9 +25,6 @@ cat GLOBAL/CLAUDE.md GLOBAL/security-php.md > ~/.claude/CLAUDE.md
 ```bash
 # ⚠️ CLAUDE.md가 아닌 CLAUDE.template.md를 복사!
 cp CLAUDE.template.md /path/to/project/CLAUDE.md
-
-# QA/SKILL 디렉터리는 빈 디렉터리로 생성 (필요 시)
-mkdir -p /path/to/project/QA /path/to/project/SKILL
 ```
 
 Claude Code를 시작하면 `CLAUDE.template.md`의 플레이스홀더(`{{}}`)를 감지하여 소스 코드를 자동 분석합니다.
