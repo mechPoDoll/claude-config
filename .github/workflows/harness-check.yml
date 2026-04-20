@@ -1,0 +1,25 @@
+name: Harness Validation
+
+on:
+  pull_request:
+    branches: [main, master]
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: QA 파일 명명 규칙 검증
+        run: bash scripts/validate-qa-naming.sh QA
+
+      - name: SKILL 파일 명명 규칙 검증
+        run: bash scripts/validate-skill-naming.sh SKILL
+
+      - name: 보안 패턴 위반 탐지
+        run: bash scripts/validate-security-patterns.sh .
