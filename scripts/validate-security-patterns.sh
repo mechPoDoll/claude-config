@@ -1,6 +1,12 @@
 #!/bin/bash
 # 기본 보안 패턴 위반 탐지
 # PHP, JavaScript, Python, Java 소스 파일에서 명백한 보안 위반 패턴을 탐지
+#
+# 검증 제외 경로 (third-party / 빌드 산출물):
+#   - vendor/, node_modules/, .git/
+#   - assets/  (jQuery, Swiper, Lottie 등 외부 라이브러리 위치)
+#   - *.min.js (난독화된 외부 라이브러리)
+# 프로젝트 자체 코드는 api/, lib/, pages/, cron/ 등에 위치하므로 그대로 검증됨.
 
 set -e
 
@@ -42,6 +48,8 @@ fi
 echo "[ JS ] eval() 사용 탐지..."
 JS_EVAL=$(find "$TARGET_DIR" \( -name "*.js" -o -name "*.ts" -o -name "*.jsx" -o -name "*.tsx" \) \
   -not -path "*/node_modules/*" -not -path "*/.git/*" \
+  -not -path "*/vendor/*" -not -path "*/assets/*" \
+  -not -name "*.min.js" \
   -exec grep -ln '\beval\s*(' {} \; 2>/dev/null || true)
 if [ -n "$JS_EVAL" ]; then
   echo "  ❌ eval() 사용 감지:"
@@ -55,6 +63,8 @@ fi
 echo "[ JS ] innerHTML 직접 사용 탐지..."
 JS_INNERHTML=$(find "$TARGET_DIR" \( -name "*.js" -o -name "*.ts" -o -name "*.jsx" -o -name "*.tsx" \) \
   -not -path "*/node_modules/*" -not -path "*/.git/*" \
+  -not -path "*/vendor/*" -not -path "*/assets/*" \
+  -not -name "*.min.js" \
   -exec grep -ln '\.innerHTML\s*=' {} \; 2>/dev/null || true)
 if [ -n "$JS_INNERHTML" ]; then
   echo "  ⚠️  innerHTML 직접 사용 감지 (XSS 위험, 수동 확인 필요):"
@@ -93,7 +103,9 @@ fi
 echo "[ 공통 ] 하드코딩 시크릿 패턴 탐지..."
 HARDCODED=$(find "$TARGET_DIR" \
   \( -name "*.php" -o -name "*.js" -o -name "*.ts" -o -name "*.py" -o -name "*.java" \) \
-  -not -path "*/node_modules/*" -not -path "*/.git/*" -not -path "*/vendor/*" \
+  -not -path "*/node_modules/*" -not -path "*/.git/*" \
+  -not -path "*/vendor/*" -not -path "*/assets/*" \
+  -not -name "*.min.js" -not -path "*/vendor/*" \
   -exec grep -ln 'password\s*=\s*["'"'"'][^"'"'"']\{4,\}["'"'"']\|secret\s*=\s*["'"'"'][^"'"'"']\{4,\}["'"'"']\|api_key\s*=\s*["'"'"'][^"'"'"']\{4,\}["'"'"']' {} \; 2>/dev/null || true)
 if [ -n "$HARDCODED" ]; then
   echo "  ⚠️  하드코딩 시크릿 가능성 (수동 확인 필요):"
