@@ -10,12 +10,28 @@ $ARGUMENTS 대상에 대해 보안 감사를 수행합니다.
 
 ## 파일 명명 규칙 (반드시 준수)
 
-| 유형 | 파일명 패턴 | 예시 |
-|------|------------|------|
-| QA 이력 마스터 | `index.md` | 전체 QA 현황 요약 |
-| 보안감사 보고서 | `qa_YYYYMMDD_v#.md` | `qa_20260318_v1.md` |
-| 주제별 보고서 | `qa_YYYYMMDD_v#_주제.md` | `qa_20260318_v2_db_tuning.md` |
-| 레거시 체크리스트 | `legacy_checklist.md` | 레거시 초기 점검용 |
+| 유형 | 위치 | 파일명 패턴 | 예시 |
+|------|------|------------|------|
+| QA 이력 마스터 | `QA/` | `index.md` | 전체 QA 현황 요약 |
+| 보안감사 보고서 | `QA/` | `qa_YYYYMMDD_v#.md` | `qa_20260318_v1.md` |
+| 주제별 보고서 | `QA/` | `qa_YYYYMMDD_v#_주제.md` | `qa_20260318_v2_db_tuning.md` |
+| 검증 결과 | `QA/` | `qa_YYYYMMDD_v#_*_verify_results.md` | `qa_20260429_v3_refactor_verify_results.md` |
+| 레거시 체크리스트 | `QA/` | `legacy_checklist.md` | 레거시 초기 점검용 |
+| 검증 SQL (도구) | **`sql/verify/`** | `{영역}_verify.sql` | `refactor_0427_v1_v2_verify.sql` |
+
+### 산출물 위치 규칙 (중요)
+
+**`QA/` 디렉터리는 `.md` 보고서만 둔다.** 검증용 SQL 파일은 `sql/verify/` 하위에 배치한다.
+
+| 산출물 | 위치 | 이유 |
+|--------|------|------|
+| QA 보고서 (.md) | `QA/` | QA 명명 규칙 검증 통과 (`scripts/validate-qa-naming.sh`) |
+| 검증 SQL (.sql) | `sql/verify/` | QA/ 명명 규칙은 .sql 비허용 + DB 도구는 sql/ 트리에 통일 |
+| 검증 결과 (.md) | `QA/` | SQL 실행 stdout을 누적 보존, 짝 SQL 파일을 `../sql/verify/`로 링크 |
+
+**SQL/MD 분리 원칙**: SQL = "어떻게 검증하는지" (재현 도구), MD = "그때 통과했는지" (시점 기록). 두 파일을 합치면 재현성·기록성 동시에 잃는다.
+
+**보존 정책**: 검증 SQL은 QA 종료 후에도 회귀 검증 자산으로 영구 보존. 동일 영역 후속 작업 시 재실행하여 데이터 정합성 비교에 사용. 임의 삭제 금지.
 
 ## 보안 감사 절차
 
