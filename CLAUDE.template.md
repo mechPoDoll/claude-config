@@ -63,11 +63,9 @@
 ### 배포
 | 항목 | 내용 |
 |------|------|
-| 배포 방식 | {{예: Git push / FTP / SFTP / rsync / CI/CD 등}} |
+| 배포 방식 | {{예: Git push / 배포 스크립트 / rsync / CI/CD 등}} |
 | 배포 대상 | {{예: 운영 서버 IP, 도메인, 경로}} |
 | 배포 제외 | {{예: .env, node_modules, .git, log/ 등}} |
-
-{{FTP/SFTP 사용 시: `.vscode/sftp.json` 설정은 글로벌 규칙(~/.claude/CLAUDE.md)의 SFTP 설정 규칙을 따를 것}}
 
 ---
 
@@ -181,5 +179,5 @@
 
 ## 기여 가이드
 - Git 사용 시: PR 제목은 `feat`, `fix`, `docs` 등으로 시작
-- FTP 사용 시: 수정 파일 목록과 변경 사유를 QA 보고서 또는 커밋 로그에 기록. `.vscode/sftp.json` 설정은 글로벌 규칙의 SFTP ignore 목록을 기본으로 적용
+- 배포 스크립트 사용 시: 수정 파일 목록과 변경 사유를 QA 보고서 또는 커밋 로그에 기록
 - 코드 스타일: 네이밍 컨벤션 및 Lint 준수
