@@ -14,3 +14,4 @@
 - 에러: 운영 환경 `display_errors=Off`, DB 에러 사용자 노출 금지
 - 입력검증: `filter_var()`, `intval()` 등으로 타입 검증
 - `eval()`, `exec()`, `system()` 사용 최소화
+  - **예외**: QA E2E 테스트 도구 (`QA/e2e-*.{js,py}`) 의 `page.evaluate()` 등 동적 JS 주입은 면제. Playwright 등 브라우저 자동화 도구의 표준 패턴이며 CDP 통신이라 JS `eval()` 과 메커니즘이 다름. 운영 코드는 그대로 적용.

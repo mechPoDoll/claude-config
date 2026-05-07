@@ -46,9 +46,11 @@ fi
 # JavaScript: eval() / innerHTML 직접 사용
 # ──────────────────────────────────────────
 echo "[ JS ] eval() 사용 탐지..."
+# QA E2E 도구 (QA/e2e-*.{js,py}) 면제 — Playwright page.evaluate() 등 동적 JS 주입 필수
 JS_EVAL=$(find "$TARGET_DIR" \( -name "*.js" -o -name "*.ts" -o -name "*.jsx" -o -name "*.tsx" \) \
   -not -path "*/node_modules/*" -not -path "*/.git/*" \
   -not -path "*/vendor/*" -not -path "*/assets/*" \
+  -not -path "*/QA/e2e-*" \
   -not -name "*.min.js" \
   -exec grep -ln '\beval\s*(' {} \; 2>/dev/null || true)
 if [ -n "$JS_EVAL" ]; then
@@ -75,8 +77,10 @@ fi
 # Python: eval() 사용
 # ──────────────────────────────────────────
 echo "[ Python ] eval() 사용 탐지..."
+# QA E2E 도구 면제 (JS와 동일 정책)
 PY_EVAL=$(find "$TARGET_DIR" -name "*.py" \
   -not -path "*/.git/*" \
+  -not -path "*/QA/e2e-*" \
   -exec grep -ln '\beval\s*(' {} \; 2>/dev/null || true)
 if [ -n "$PY_EVAL" ]; then
   echo "  ❌ eval() 사용 감지:"
