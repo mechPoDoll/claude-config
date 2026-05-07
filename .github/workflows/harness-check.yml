@@ -23,3 +23,6 @@ jobs:
 
       - name: 보안 패턴 위반 탐지
         run: bash scripts/validate-security-patterns.sh .
+
+      - name: 페이지 권한 일관성 검증 (require_page_access ↔ page_permissions/has_role)
+        run: bash scripts/validate-page-permissions.sh .
