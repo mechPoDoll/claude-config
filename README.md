@@ -124,7 +124,8 @@ claude-config/
 │       ├── skill-write.md       # SKILL 명세서 작성 커맨드
 │       ├── security-check.md    # 보안 체크리스트 커맨드
 │       ├── manual-checklist.md  # 수동 검증 체크리스트 커맨드
-│       ├── share-worklog.md     # 진행상황 고객 공유본 (소스 무관·모듈화)
+│       ├── share-worklog.md     # 워크로그 기반 진행상황 공유본
+│       ├── share-session.md     # 세션/레퍼런스 기반 (질문 인터페이스)
 │       └── _shared/
 │           └── customer-report-format.md # 공유본 포맷 공통 모듈(SSOT)
 ├── scripts/
@@ -149,7 +150,10 @@ claude-config/
 | `/skill-write [기능명]` | SKILL 명세서 작성 절차 + 형식 주입 |
 | `/security-check [대상]` | 보안 체크리스트 실행 |
 | `/manual-checklist [대상]` | 수동 검증 체크리스트 생성 |
-| `/share-worklog [날짜] [--ref 소스]` | 진행상황 고객 공유본. 워크로그 없어도 세션/임의 레퍼런스/git 으로 생성. 포맷은 `_shared/customer-report-format.md` 공통 모듈 |
+| `/share-worklog [날짜]` | 워크로그(`worklog/$DATE.md`) 기반 진행상황 고객 공유본 |
+| `/share-session [날짜]` | 워크로그 없을 때 — 세션/파일/붙여넣기/git 소스를 **질문으로 선택**해 공유본 생성 |
+
+> 두 커맨드 모두 포맷·테마매핑·저장은 공통 모듈 `_shared/customer-report-format.md`(SSOT) 가 결정. 플래그 입력 없음 — 소스가 다르면 `/share-session` 이 질문으로 받음.
 
 ---
 
