@@ -120,9 +120,13 @@ claude-config/
 ├── .claude/
 │   ├── settings.json      # 도구 허용/차단 설정
 │   └── commands/
-│       ├── qa-audit.md    # QA 보안 감사 커맨드
-│       ├── skill-write.md # SKILL 명세서 작성 커맨드
-│       └── security-check.md # 보안 체크리스트 커맨드
+│       ├── qa-audit.md          # QA 보안 감사 커맨드
+│       ├── skill-write.md       # SKILL 명세서 작성 커맨드
+│       ├── security-check.md    # 보안 체크리스트 커맨드
+│       ├── manual-checklist.md  # 수동 검증 체크리스트 커맨드
+│       ├── share-worklog.md     # 진행상황 고객 공유본 (소스 무관·모듈화)
+│       └── _shared/
+│           └── customer-report-format.md # 공유본 포맷 공통 모듈(SSOT)
 ├── scripts/
 │   ├── validate-qa-naming.sh        # QA 명명 규칙 검증
 │   ├── validate-skill-naming.sh     # SKILL 명명 규칙 검증
@@ -144,6 +148,8 @@ claude-config/
 | `/qa-audit [대상]` | QA 보안 감사 절차 + 보고서 형식 주입 |
 | `/skill-write [기능명]` | SKILL 명세서 작성 절차 + 형식 주입 |
 | `/security-check [대상]` | 보안 체크리스트 실행 |
+| `/manual-checklist [대상]` | 수동 검증 체크리스트 생성 |
+| `/share-worklog [날짜] [--ref 소스]` | 진행상황 고객 공유본. 워크로그 없어도 세션/임의 레퍼런스/git 으로 생성. 포맷은 `_shared/customer-report-format.md` 공통 모듈 |
 
 ---
 
